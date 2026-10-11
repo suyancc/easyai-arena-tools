@@ -20,3 +20,6 @@ coverage/
 *.diagnostic.json
 .DS_Store
 Thumbs.db
+
+# Packaged plugin builds are published under releases/
+!releases/*.zip
