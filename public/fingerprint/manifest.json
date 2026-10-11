@@ -1,0 +1,12 @@
+{
+  "schema": "arena-model-fingerprint-assets-v1",
+  "source_repository": "https://github.com/Ikaleio/lm-detector",
+  "source_commit": "d53d3f5b158249a87a895e4fc7aaa8a940dfd6d6",
+  "files": {
+    "shared_detector.json": "24cb37ae32bfd70f97b43dad4e71332cfa82aaa8527fbb1fe7dc007ce16f216f",
+    "model_catalog.json": "43cdb732d6e63250b9dcca2a15a2becd80eb7ed871ddf93439c9b09583a70203",
+    "MIT-LICENSE.txt": "238afb57e498990742f84b9ce6167b4e256ac06104a9938ce953bc41c14bea51",
+    "UPSTREAM.md": "a027a5971ae4c6670226e0f685f9d536cc32e5502800ce8b7c8f41862f7402d7",
+    "../tests/fixtures/shared_detector_golden.json": "ee9fae39f7e4f078c823928d8136130cfd750c640e4793fd67f4194b653f25a7"
+  }
+}

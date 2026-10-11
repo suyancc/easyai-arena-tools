@@ -1,0 +1,10 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": [".wxt/wxt.d.ts", "entrypoints/**/*", "utils/**/*", "tests/**/*", "wxt.config.ts"]
+}

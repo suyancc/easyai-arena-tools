@@ -1,0 +1,38 @@
+{
+  "name": "easyai-arena-tools",
+  "description": "EASYAI browser extension for Arena.ai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-injected.mjs",
+    "dev": "node scripts/sync-injected.mjs && wxt",
+    "dev:edge": "node scripts/sync-injected.mjs && wxt -b edge",
+    "dev:firefox": "node scripts/sync-injected.mjs && wxt -b firefox",
+    "build": "node scripts/sync-injected.mjs && wxt build",
+    "build:chrome": "node scripts/sync-injected.mjs && wxt build -b chrome",
+    "build:edge": "node scripts/sync-injected.mjs && wxt build -b edge",
+    "build:firefox": "node scripts/sync-injected.mjs && wxt build -b firefox",
+    "build:all": "npm run build:chrome && npm run build:edge && npm run build:firefox",
+    "zip": "node scripts/sync-injected.mjs && wxt zip -b chrome",
+    "zip:edge": "node scripts/sync-injected.mjs && wxt zip -b edge",
+    "zip:firefox": "node scripts/sync-injected.mjs && wxt zip -b firefox",
+    "zip:all": "npm run zip && npm run zip:edge && npm run zip:firefox",
+    "compile": "tsc --noEmit",
+    "test": "node scripts/sync-injected.mjs && vitest run",
+    "postinstall": "wxt prepare"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.0",
+    "wxt": "^0.21.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suyancc/easyai-arena-tools.git"
+  }
+}

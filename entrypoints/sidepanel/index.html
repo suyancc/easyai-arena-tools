@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EASYAI</title>
+    <meta name="manifest.open_at_install" content="false" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="brand" id="tab-info">
+        <img src="/icon/32.png" width="20" height="20" alt="" /><span
+          >EASYAI</span
+        ><a class="brand-site" href="http://www.oai9.com" target="_blank" rel="noopener noreferrer">www.oai9.com</a>
+      </div>
+      <span id="conn" class="connection">连接中</span>
+      <button id="registration-toggle" class="icon-button" type="button" title="Outlook 注册" aria-label="Outlook 注册" aria-controls="registration-view">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h14v12H3zM3 6l7 5 7-5M20 13v8M16 17h8" /></svg>
+      </button>
+      <button
+        id="settings-toggle"
+        class="icon-button"
+        type="button"
+        title="设置"
+        aria-label="设置"
+        aria-controls="settings-view"
+        aria-expanded="false"
+      >
+        <svg viewBox="0 0 24 24">
+          <path
+            d="m9 3-.7 2.3-2 .9L4 5.8 2 9.2l1.7 1.8v2L2 14.8l2 3.4 2.3-.4 2 .9L9 21h6l.7-2.3 2-.9 2.3.4 2-3.4-1.7-1.8v-2L22 9.2l-2-3.4-2.3.4-2-.9L15 3Z"
+          />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </button>
+    </header>
+    <section class="quota-line" aria-label="账号额度">
+      <span class="quota-label">额度</span>
+      <div id="quota-body" class="quota-body"></div>
+      <button
+        id="quota-refresh"
+        class="icon-button"
+        type="button"
+        title="刷新额度"
+        aria-label="刷新额度"
+      >
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M20 7v5h-5M4 17v-5h5M5.6 7a7 7 0 0 1 11.7-1L20 9M4 15l2.7 3A7 7 0 0 0 18.4 17"
+          />
+        </svg>
+      </button>
+    </section>
+    <div id="banner" class="banner" hidden>
+      <span id="banner-text"></span
+      ><button id="banner-action" class="text-button" type="button"></button>
+    </div>
+    <main id="main-view" class="view main-view">
+      <section class="control-area" aria-label="模型操作">
+        <div class="model-line">
+          <strong id="draw-model">尚未识别</strong
+          ><span id="model-kind" class="badge" hidden></span
+          ><span id="draw-rounds" class="rounds" title="已完成轮次">0 轮</span>
+        </div>
+        <div class="action-grid">
+          <button id="draw-start" class="button primary" type="button">
+            开始抽模型
+          </button>
+          <button id="fingerprint-start" class="button" type="button">
+            指纹探测
+          </button>
+          <button id="pelican-send" class="button" type="button">
+            鹈鹕测试
+          </button>
+        </div>
+        <div class="activity-row">
+          <span id="draw-phase" class="phase">就绪</span>
+          <span
+            id="draw-message"
+            class="status"
+            role="status"
+            aria-live="polite"
+          ></span>
+          <button
+            id="draw-stop"
+            class="text-button danger"
+            type="button"
+            hidden
+          >
+            停止
+          </button>
+        </div>
+      </section>
+      <details id="history-panel" class="history" aria-label="最近结果" open>
+        <summary class="section-heading">
+          <h2>最近结果</h2>
+          <span id="history-count" class="count"></span
+          ><button id="history-clear" class="text-button" type="button">
+            清空
+          </button>
+        </summary>
+        <ol id="history-list" class="history-list"></ol>
+      </details>
+      <footer class="community-footer">
+        <button id="community-copy" type="button" title="点击复制 QQ 群号" aria-label="复制 QQ 交流群号 1053996918">
+          <span class="community-label">QQ 交流群</span><span class="community-number">1053996918</span><span id="community-copy-status" role="status" aria-live="polite">复制</span>
+        </button>
+      </footer>
+    </main>
+    <section
+      id="settings-view"
+      class="view settings-view"
+      hidden
+      aria-label="设置"
+    >
+      <header class="settings-heading">
+        <h2>设置</h2>
+        <span id="settings-saved" class="muted" role="status" aria-live="polite"></span>
+        <button id="settings-back" class="text-button" type="button" aria-label="返回主面板" title="返回主面板">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14" /></svg>
+          <span>返回</span>
+        </button>
+      </header>
+      <section class="settings-section registration-password-setting">
+        <h3>Arena 注册</h3>
+        <label class="field"><span>固定注册密码</span><input id="registration-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" /></label>
+        <div class="registration-setting-foot"><small>仅此浏览器本地保存，不与 Outlook 密码混用。</small><button id="registration-password-save" class="text-button" type="button">保存密码</button></div>
+        <small id="registration-password-status" role="status"></small>
+      </section>
+      <section class="settings-section registration-password-setting" aria-label="2Captcha 自动验证">
+        <h3>2Captcha 自动验证</h3>
+        <label class="field"><span>API Key</span><input id="captcha-api-key" type="password" autocomplete="off" maxlength="64" placeholder="填写平台 API Key" /></label>
+        <label class="check"><input id="captcha-enabled" type="checkbox" />所有 Arena 页面自动验证（付费）</label>
+        <div class="registration-setting-foot"><button id="captcha-save" class="text-button" type="button">保存</button><button id="captcha-test" class="text-button" type="button">检测余额</button></div>
+        <small>默认关闭；每页10分钟最多3次，总计每小时10次。同一验证不重试。页面地址（不含查询参数）和验证码参数会发给2Captcha，不发送账号密码或Cookie。Key仅本地保存，非加密存储。</small>
+        <small id="captcha-settings-status" role="status" aria-live="polite"></small>
+      </section>
+      <form id="settings-form" autocomplete="off">
+        <section class="settings-section">
+          <h3>抽模型</h3>
+          <div class="grid2">
+            <label class="field"
+              ><span>轮数 <small>0 不限</small></span
+              ><input name="limit" type="number" min="0" max="999" step="1"
+            /></label>
+            <label class="field"
+              ><span>间隔 / 秒</span
+              ><input
+                name="roundPauseSeconds"
+                type="number"
+                min="0"
+                max="60"
+                step="1"
+            /></label>
+          </div>
+          <label class="field"
+            ><span>命中即停</span
+            ><input
+              name="targetKeywords"
+              type="text"
+              placeholder="模型关键词，逗号分隔"
+          /></label>
+          <label class="field"
+            ><span>提示词</span
+            ><textarea name="prompt" rows="2" maxlength="4000"></textarea>
+          </label>
+          <label class="switch"
+            ><input name="autoRename" type="checkbox" /><span
+              >自动备注模型名</span
+            ></label
+          >
+        </section>
+        <section class="settings-section">
+          <h3>
+            自动指纹细分
+            <span
+              class="subtle"
+              title="每次触发增加三次模型请求；候选不代表官方确认"
+              >+3 次请求</span
+            >
+          </h3>
+          <div class="family-options" role="group" aria-label="触发家族">
+            <label
+              ><input name="fingerprint-openai" type="checkbox" /><span
+                >GPT</span
+              ></label
+            >
+            <label
+              ><input name="fingerprint-anthropic" type="checkbox" /><span
+                >Claude</span
+              ></label
+            >
+            <label
+              ><input name="fingerprint-google" type="checkbox" /><span
+                >Gemini</span
+              ></label
+            >
+          </div>
+          <label
+            class="switch"
+            title="不受家族选择限制；不复用上一轮候选。官方型号已确认时跳过。"
+            ><input name="fingerprintEveryTurn" type="checkbox" /><span
+              >每轮执行，不复用候选</span
+            ></label
+          >
+        </section>
+        <details class="advanced">
+          <summary>高级设置</summary>
+          <div class="grid2">
+            <label class="field"
+              ><span>官方型号等待 / 秒</span
+              ><input
+                name="modelWaitSeconds"
+                type="number"
+                min="10"
+                max="600"
+                step="1"
+            /></label>
+            <label class="field"
+              ><span>家族结果等待 / 秒</span
+              ><input
+                name="familyWaitSeconds"
+                type="number"
+                min="3"
+                max="120"
+                step="1"
+            /></label>
+            <label class="field"
+              ><span>无进展停止 / 秒</span
+              ><input
+                name="noProgressSeconds"
+                type="number"
+                min="60"
+                max="1800"
+                step="10"
+            /></label>
+          </div>
+        </details>
+        <div class="form-foot">
+          <button id="settings-reset" class="text-button" type="button">
+            恢复默认
+          </button>
+        </div>
+      </form>
+    </section>
+    <section id="registration-view" class="view settings-view" hidden aria-label="Outlook 注册">
+      <header class="settings-heading"><h2>Outlook 注册</h2><button id="registration-back" class="text-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14" /></svg><span>返回</span></button></header>
+      <section class="settings-section registration-content">
+        <label class="field"><span class="sr-only">Outlook 邮箱信息</span><textarea id="registration-account" rows="4" maxlength="12000" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="邮箱----密码或 none----client_id----refresh_token"></textarea></label>
+        <div class="registration-actions"><button id="registration-start" class="button primary" type="button">开始注册</button><button id="registration-stop" class="button danger" type="button" hidden>停止注册</button></div>
+        <p id="registration-status" class="registration-status" role="status" aria-live="polite"></p>
+        <div class="registration-links"><button id="registration-page" class="text-button" type="button" hidden>查看网页</button><button id="registration-settings" class="text-button" type="button">密码设置</button></div>
+        <p class="registration-privacy">邮箱凭据将发送至 tools.oai9.com 收信。</p>
+        <details class="registration-help"><summary>使用说明</summary><p>一次一个账号，已登录请先退出。人机验证需手动完成。关闭面板不停止任务；重载扩展会中断任务。插件不保存 Outlook OAuth 凭据，服务端处理由该服务决定。最近成功账号与当次密码保存在本机，可清除；本地存储不是加密密码库。</p></details>
+      </section>
+      <section id="registration-result" class="settings-section registration-result" hidden aria-label="最近成功注册的账号">
+        <div class="registration-result-heading"><h3>注册信息</h3><button id="registration-result-clear" class="text-button" type="button">清除</button></div>
+        <small id="registration-result-time"></small>
+        <div class="registration-result-row"><input id="registration-result-email" readonly aria-label="注册邮箱" autocomplete="off" /><button id="registration-copy-email" class="text-button" type="button">复制邮箱</button></div>
+        <div class="registration-result-row"><input id="registration-result-password" type="password" readonly aria-label="当次注册密码" autocomplete="off" /><button id="registration-result-show" class="text-button" type="button">显示</button><button id="registration-copy-password" class="text-button" type="button">复制密码</button></div>
+        <button id="registration-copy-both" class="button" type="button">复制账号密码</button>
+        <small id="registration-result-feedback" role="status" aria-live="polite"></small>
+      </section>
+      <footer class="registration-footer"><a id="registration-mail-link" href="https://tools.oai9.com/outlook-mail" target="_blank" rel="noopener noreferrer">手动查看邮箱</a></footer>
+    </section>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

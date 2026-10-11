@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.png binary
+# Preserve pinned bytes used by integrity tests, regardless of local Git settings.
+public/fingerprint/* -text
+public/injected/* -text
+tests/fixtures/* -text
