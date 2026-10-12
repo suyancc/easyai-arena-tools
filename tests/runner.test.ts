@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Runner, type PageApi } from '../utils/runner';
-import { normalizeSettings } from '../utils/settings';
+import { normalizeSettings, DEFAULT_PROMPT } from '../utils/settings';
 import type { PageView, RoundRecord, TurnProbe } from '../utils/types';
 
 const ROOT = 'https://arena.ai/work';
@@ -13,6 +13,7 @@ function fakeArena(opts: { resolved?: string | null; family?: string } = {}) {
   let conversation = false;
   let answerTicks = -1;
   const actions: string[] = [];
+  const promptActions: Array<{ name: string; prompt: string }> = [];
   const renamed: string[] = [];
   const api: PageApi = {
     async read(): Promise<PageView> {
@@ -28,6 +29,7 @@ function fakeArena(opts: { resolved?: string | null; family?: string } = {}) {
     },
     async action(name, prompt) {
       actions.push(name);
+      promptActions.push({ name, prompt });
       if (name === 'new') { url = ROOT; conversation = false; draft = ''; answerTicks = -1; }
       if (name === 'fill') draft = prompt;
       if (name === 'send') { draft = ''; conversation = true; url = CHAT; answerTicks = 3; }
@@ -51,7 +53,7 @@ function fakeArena(opts: { resolved?: string | null; family?: string } = {}) {
     async renameConversation(_t, title) { renamed.push(title); },
     stamp: async () => '10-09 10:00',
   };
-  return { api, actions, renamed };
+  return { api, actions, promptActions, renamed };
 }
 
 async function run(api: PageApi, settings = normalizeSettings({ limit: 2, roundPauseSeconds: 0 })) {
@@ -82,6 +84,25 @@ describe('Runner', () => {
     expect(stop).toContain('已完成 2/2 轮');
     expect(page.renamed[0]).toBe('gpt-6-sol-high');
     expect(page.actions.filter((a) => a === 'send')).toHaveLength(2);
+  });
+
+  it('uses a fresh random ten-letter filename for each prompt send', async () => {
+    let randomCalls = 0;
+    const randomSpy = vi.spyOn(Math, 'random').mockImplementation(() => (randomCalls++ < 10 ? 0 : 0.05));
+    try {
+      const page = fakeArena({ resolved: 'gpt-6-sol-high' });
+      await run(page.api);
+      const filled = page.promptActions.filter(action => action.name === 'fill').map(action => action.prompt);
+      const sent = page.promptActions.filter(action => action.name === 'send').map(action => action.prompt);
+      expect(filled).toEqual([
+        DEFAULT_PROMPT.replace('nonexistent.txt', 'aaaaaaaaaa.txt'),
+        DEFAULT_PROMPT.replace('nonexistent.txt', 'bbbbbbbbbb.txt'),
+      ]);
+      expect(sent).toEqual(filled);
+      expect(randomCalls).toBe(20);
+    } finally {
+      randomSpy.mockRestore();
+    }
   });
 
   it('stops when the target model is hit', async () => {

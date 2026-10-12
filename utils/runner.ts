@@ -11,6 +11,7 @@
  *  - 新增可选「命中目标模型即停止」。
  */
 import { created, isRootRoute, route } from './arena-route';
+import { preparePromptForSend } from './settings';
 import { FingerprintSession, type FingerprintPageApi } from './fingerprint/session';
 import { bound, eligible, ready } from './fingerprint/identity';
 import { FamilyCandidateCache } from './fingerprint/result';
@@ -64,7 +65,8 @@ export class Runner {
   private ticking = false;
   private since: number;
   rounds = 0;
-  private readonly prompt: string;
+  private readonly promptTemplate: string;
+  private prompt: string;
   private readonly limit: number;
   private readonly noProgressMs: number;
   private readonly modelWaitSec: number;
@@ -114,7 +116,8 @@ export class Runner {
     this.since = now;
     this.stableSince = now;
     this.progressAt = now;
-    this.prompt = settings.prompt.trim();
+    this.promptTemplate = settings.prompt.trim();
+    this.prompt = this.promptTemplate;
     this.fingerprintFamilies = settings.fingerprintFamilies ?? [];
     this.fingerprintEveryTurn = settings.fingerprintEveryTurn === true;
     this.limit = settings.limit;
@@ -410,7 +413,10 @@ export class Runner {
       }
 
       case 'waitNew':
-        if (!p.conversation && !p.generating && p.editor) this.go('fill');
+        if (!p.conversation && !p.generating && p.editor) {
+          this.prompt = preparePromptForSend(this.promptTemplate);
+          this.go('fill');
+        }
         else if (this.late(20)) return '未能打开新对话，请检查页面后重新开始';
         break;
 

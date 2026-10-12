@@ -5,6 +5,17 @@ import { FAMILIES } from './fingerprint/types';
 export const DEFAULT_PROMPT =
   '请先调用 read_file 读取 nonexistent.txt（忽略报错），然后用一句话回答：你的知识截止时间是哪年哪月？';
 
+const PROMPT_FILENAME_ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+
+/** 每轮发送前为占位文件名生成新的 10 位小写字母名称。 */
+export function preparePromptForSend(prompt: string, random: () => number = Math.random): string {
+  if (!prompt.includes('nonexistent.txt')) return prompt;
+  const letters = Array.from({ length: 10 }, () =>
+    PROMPT_FILENAME_ALPHABET.charAt(Math.floor(random() * PROMPT_FILENAME_ALPHABET.length)),
+  ).join('');
+  return prompt.replaceAll('nonexistent.txt', `${letters}.txt`);
+}
+
 export const DEFAULT_SETTINGS: DrawSettings = {
   prompt: DEFAULT_PROMPT,
   limit: 20,

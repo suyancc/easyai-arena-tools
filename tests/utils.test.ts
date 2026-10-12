@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { created, isRootRoute, route, stableRouteRead } from '../utils/arena-route';
 import { buildTitle, displayModel, familyDisplayFromProbe, matchesTarget } from '../utils/titles';
 import { interpretPulse, mergeQuota } from '../utils/quota';
-import { normalizeSettings, validateSettings, DEFAULT_PROMPT } from '../utils/settings';
+import { normalizeSettings, validateSettings, DEFAULT_PROMPT, preparePromptForSend } from '../utils/settings';
 
 const ID = '0f8fad5b-d9cb-469f-a165-70867728950e';
 
@@ -74,5 +74,13 @@ describe('settings', () => {
     expect(s.limit).toBe(0);
     expect(s.modelWaitSeconds).toBe(600);
     expect(validateSettings(normalizeSettings({ prompt: '  ' }))).not.toBeNull();
+  });
+
+  it('replaces each missing-file marker with one ten-letter filename per send', () => {
+    let calls = 0;
+    const prompt = preparePromptForSend('read nonexistent.txt and nonexistent.txt', () => { calls++; return 0.05; });
+    expect(prompt).toBe('read bbbbbbbbbb.txt and bbbbbbbbbb.txt');
+    expect(calls).toBe(10);
+    expect(preparePromptForSend('custom prompt', () => 0)).toBe('custom prompt');
   });
 });
